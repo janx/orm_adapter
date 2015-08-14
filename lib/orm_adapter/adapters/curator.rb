@@ -28,14 +28,16 @@ module Curator
 
       # @see OrmAdapter::Base#find_first
       def find_first(options = {})
-        raise NotSupportedError
-        #conditions, order = extract_conditions!(options)
-        #klass.limit(1).where(conditions_to_fields(conditions)).order_by(order).first
+        raise ::OrmAdapter::NotSupportedError if options.size != 1
+        condition = options.first
+        repository._find_by_attribute(condition[0], condition[1]).first
       end
 
       # @see OrmAdapter::Base#find_all
       def find_all(options = {})
-        raise NotSupportedError
+        raise ::OrmAdapter::NotSupportedError if options.size != 1
+        condition = options.first
+        repository._find_by_attribute(condition[0], condition[1])
         #conditions, order, limit, offset = extract_conditions!(options)
         #klass.where(conditions_to_fields(conditions)).order_by(order).limit(limit).offset(offset)
       end
@@ -51,11 +53,6 @@ module Curator
         repository.delete(object.id) if valid_object?(object)
       end
 
-    protected
-
-      # converts and documents to ids
-      def conditions_to_fields(conditions)
-      end
     end
   end
 end
